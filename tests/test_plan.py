@@ -253,6 +253,20 @@ def test_fit_on_train_transform_test(employees):
     assert list(result.data.columns) == list(plan.transform(train).data.columns)
 
 
+def test_transform_marks_issues_not_seen_during_fit():
+    train = pd.DataFrame({"value": list(range(1, 11))})
+    plan = cp.inspect(train, key=None).fit(train)
+    result = plan.transform(pd.DataFrame({"value": [None, 100]}))
+
+    assert list(result.data.columns) == ["value", "value_imputed", "value_outlier"]
+    assert result.data["value_imputed"].tolist() == [True, False]
+    assert result.data["value_outlier"].tolist() == [False, True]
+    assert result.data.loc[0, "value"] == 6
+    assert result.data.loc[1, "value"] == 100.0
+    assert list(plan.transform(train).data.columns) == list(result.data.columns)
+    assert result.log.to_frame().query("step == 'impute'")["row"].tolist() == [0]
+
+
 def test_transform_requires_fit():
     with pytest.raises(RuntimeError, match="not fitted"):
         CleaningPlan({"x": ColumnPolicy()}).transform(pd.DataFrame({"x": [1]}))
