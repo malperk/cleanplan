@@ -222,16 +222,46 @@ plan = cp.CleaningPlan.from_dict(json.load(open("cleaning_plan.json")))
 Keep the JSON under version control next to your pipeline. It records how the
 data was cleaned.
 
-## How it relates to other tools
+## Compared with other tools
 
-cleanplan sits between profiling and validation tools and can be used with them:
+Most of these tools do a different job, and several work well alongside
+cleanplan. The table shows which tool fits which job.
 
-- **ydata-profiling** describes a dataset. cleanplan acts on it.
-- **pandera** and **Great Expectations** validate data. cleanplan also
-  repairs it, and makes sure the repair itself passes your rules.
-- **scikit-learn imputers** fill gaps inside a model pipeline. cleanplan
-  cleans the table before that: duplicates, placeholders and invalid values,
-  with a log a human can read.
+| | cleanplan | pandera | Great Expectations | ydata-profiling | scikit-learn imputers | AutoClean | klib |
+|---|---|---|---|---|---|---|---|
+| **Main job** | Reviewable cleaning | Schema and data validation | Data validation | Profiling reports | Imputation in ML pipelines | Automated cleaning | Cleaning helpers and plots |
+| **Finds problems before you write any rules** | ✅ | ❌ You define checks (`infer_schema` drafts a schema) | ❌ You define Expectations | ✅ | ❌ | ✅ | ✅ |
+| **Changes the data** | ✅ | Partly: dtype coercion, custom parsers, dropping invalid rows | ❌ | ❌ | Missing values only | ✅ | Partly: drops duplicates and empty rows/columns, converts dtypes |
+| **Imputes missing values** | Median, mean, mode, constant, optionally per group | Only via custom parsers | ❌ | ❌ | Mean, median, most frequent, constant, KNN, iterative | Mean, median, most frequent, regression, KNN | ❌ Drops them |
+| **Handles outliers** | Flag, blank and re-impute, clip or drop (IQR, MAD) | Only via custom parsers | ❌ | ❌ | ❌ | Winsorize or drop (IQR) | ❌ |
+| **Shows what will change before changing it** | ✅ | ❌ | — | — | Partly: learned values in `statistics_` | ❌ | ❌ Prints a summary afterwards |
+| **Repairs respect your rules** (e.g. an imputed age stays consistent with experience) | ✅ | ❌ Parsed data is validated, not adjusted | — | — | ❌ | ❌ | ❌ |
+| **Record of changes** | Every changed cell and removed row, with the reason | ❌ Dropped rows are not reported | — | — | Missing-value indicator columns | Step-level log file | Summary of changes |
+| **Validates the result** | ✅ Re-checks rules, keys and gaps | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Learn on train data, apply to test data** | ✅ `fit` / `transform` | — | — | — | ✅ | ❌ | ❌ |
+| **Data it works with** | pandas | pandas, Polars, PySpark, Dask, Modin, Ibis and more | pandas, Spark, SQL databases, files | pandas, Spark | NumPy, pandas, Polars | pandas | pandas |
+
+— means the row does not apply, because the tool does not change data.
+
+### When to use something else
+
+- **Validating data in production**, against a schema contract, or on Polars
+  or Spark: use pandera or Great Expectations. cleanplan only validates the
+  rules you give it, and only on pandas.
+- **Exploring a new dataset** with charts and a full report: use
+  ydata-profiling or klib.
+- **Model-based imputation** (KNN, iterative) inside a model pipeline: use
+  scikit-learn. cleanplan only offers simple statistics for now.
+- **Data that does not fit in memory**: cleanplan works on in-memory pandas
+  DataFrames only.
+
+A common setup: explore with ydata-profiling, clean with cleanplan, then
+guard the pipeline with pandera.
+
+<sub>Checked in September 2026 against pandera 0.33, Great Expectations
+(GX Core) 1.23, ydata-profiling 4.18, scikit-learn 1.9, py-AutoClean 1.1.3
+and klib 1.4.1. If something here is out of date, please
+[open an issue](https://github.com/malperk/cleanplan/issues).</sub>
 
 ## Roadmap
 
