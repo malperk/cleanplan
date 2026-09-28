@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cleanplan"
+dynamic = ["version"]
+description = "Reviewable, rule-aware data cleaning for pandas: inspect, plan, apply, validate."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Alper Karatas" }]
+keywords = ["pandas", "data-cleaning", "data-quality", "imputation", "outliers", "validation"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Typing :: Typed",
+]
+dependencies = ["pandas>=2.0", "numpy>=1.23"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov>=4", "ruff>=0.6", "mypy>=1.8", "pandas-stubs"]
+
+[project.urls]
+Homepage = "https://github.com/malperk/cleanplan"
+Issues = "https://github.com/malperk/cleanplan/issues"
+Changelog = "https://github.com/malperk/cleanplan/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "src/cleanplan/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cleanplan"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = ["error"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+files = ["src/cleanplan"]
+ignore_missing_imports = true

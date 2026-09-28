@@ -1,0 +1,24 @@
+name: Bug report
+description: Something did not work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the code you ran and a small DataFrame that reproduces the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Output of `python -c "import cleanplan, pandas, sys; print(cleanplan.__version__, pandas.__version__, sys.version)"`
+    validations:
+      required: true
