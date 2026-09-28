@@ -207,8 +207,9 @@ clean_train = plan.transform(train).data
 clean_test = plan.transform(test).data  # uses medians and bounds learned from train
 ```
 
-Indicator columns are chosen at fit time, so every transformed frame has the
-same columns and the same dtypes.
+Indicator columns are chosen from the fitted policies, so every transformed
+frame has the same columns and dtypes. They also mark issues that first appear
+in test data.
 
 ### Saving decisions
 

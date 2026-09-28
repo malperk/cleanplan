@@ -325,13 +325,15 @@ class CleaningPlan:
             if pd.api.types.is_integer_dtype(df[c]) or df[c].isna().any() or work[c].isna().any()
         }
         self.outlier_bounds_ = self._learn_outlier_bounds(work)
-        work, flagged, counts = self._handle_outliers(work, scratch, labels)
+        work, _, counts = self._handle_outliers(work, scratch, labels)
         self.fill_values_ = self._learn_fills(work)
 
-        # As in scikit-learn's add_indicator, indicator columns are decided at
-        # fit time so that every transformed frame has the same schema.
-        self.imputed_indicators_ = [c for c, p in self.policies.items() if p.impute != "none" and work[c].isna().any()]
-        self.outlier_indicators_ = [c for c, mask in flagged.items() if mask.any()]
+        # Decide indicator columns from fitted policies, not the issues seen in
+        # training, so new issues in transformed frames can still be marked.
+        self.imputed_indicators_ = [c for c, p in self.policies.items() if p.impute != "none"]
+        self.outlier_indicators_ = [
+            c for c in self.outlier_bounds_ if self._policy(c).outliers in ("flag", "set_missing", "clip")
+        ]
         if self.indicators:
             names = [f"{c}{IMPUTED_SUFFIX}" for c in self.imputed_indicators_]
             names += [f"{c}{OUTLIER_SUFFIX}" for c in self.outlier_indicators_]
