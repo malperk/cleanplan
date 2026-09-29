@@ -27,7 +27,7 @@ from .plan import (
 from .result import ChangeLog, CleaningResult, ValidationError, ValidationIssue, ValidationReport
 from .rules import Check, Range, Rule, Unique
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "ChangeLog",

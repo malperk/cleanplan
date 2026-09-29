@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-29
+
+0.1.0 is no longer available on PyPI; install 0.1.1 or later.
+
 ### Fixed
 - Indicator columns now mark missing values and outliers that first appear
   during `transform`, while keeping the output schema consistent with `fit`.
@@ -30,5 +34,6 @@ All notable changes to this project are documented here. The format follows
 - `ValidationReport` re-checking rules, key uniqueness and remaining gaps.
 - `<column>_imputed` / `<column>_outlier` indicator columns.
 
-[Unreleased]: https://github.com/malperk/cleanplan/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/malperk/cleanplan/releases/tag/v0.1.0
+[Unreleased]: https://github.com/malperk/cleanplan/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/malperk/cleanplan/releases/tag/v0.1.1
+[0.1.0]: https://github.com/malperk/cleanplan/tree/v0.1.0

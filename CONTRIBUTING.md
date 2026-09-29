@@ -40,7 +40,7 @@ early. Please add a test for every bug fix and every new option.
 ## Releasing (maintainers)
 
 1. Update `__version__` in `src/cleanplan/__init__.py` and `CHANGELOG.md`.
-2. Commit, then tag: `git tag v0.1.0 && git push --tags`.
+2. Commit, then tag: `git tag vX.Y.Z && git push --tags`.
 3. The `release` workflow builds the package and publishes it to PyPI through
    trusted publishing. This needs a one-time setup on PyPI: add a trusted
    publisher for this repository, workflow `release.yml`, environment `pypi`.
